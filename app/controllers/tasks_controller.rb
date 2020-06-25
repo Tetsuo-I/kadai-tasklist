@@ -1,7 +1,7 @@
 class TasksController < ApplicationController
   before_action :require_user_logged_in
-  before_action :correct_user, only: [:show, :edit, :update, :destroy]
-  before_action :set_task, only: [:show, :edit, :update, :destroy]
+  before_action :correct_user, only: [:destroy]
+  before_action :set_task, only: [:show, :edit, :update]
   
   def index
       @tasks = current_user.tasks.order(id: :desc)
@@ -15,8 +15,6 @@ class TasksController < ApplicationController
   end
   
   def create
-     @task = Task.new(task_params)
-     
     @task = current_user.tasks.build(task_params)
     if @task.save
       flash[:success] = 'Taskを投稿しました。'
@@ -49,7 +47,7 @@ class TasksController < ApplicationController
   private
   
   def set_task
-    @task = Task.find(params[:id])
+    @task = current_user.tasks.find(params[:id])
   end
   
   def task_params
